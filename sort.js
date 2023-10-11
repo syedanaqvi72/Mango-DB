@@ -16,6 +16,13 @@ db.inventory.insertMany([
  // by writting 1 it sort ascendingly and by writting -1 it sort decendingly
  //. sort is used alot in pagination 
 
- PageNo
-  1 to 10
+ // Pagination by mongoDB with find and limit
+  //1 to 10
+  no=8
   db.blog.find().skip(0).limit(10)
+  db.blog.find().skip((pageNo-1)*no).limit(no)
+   pageNo= 1 
+   db.blog.find().skip(0).limit(8)
+   pageNo= 2 
+   db.blog.find().skip(8).limit(8)
+   // by using this command it skip first 8 and show next 8 blogs in page 2
