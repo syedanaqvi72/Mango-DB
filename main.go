@@ -18,7 +18,7 @@ func main() {
 	defer cancel()
 
 	// Set up the MongoDB client options
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI("mongodb+srv://MongoDb:masooma2013@mongodb.o6t0sar.mongodb.net/")
 
 	// Connect to the MongoDB server
 	client, err := mongo.Connect(ctx, clientOptions)
@@ -34,27 +34,20 @@ func main() {
 
 	fmt.Println("Connected to MongoDB!")
 
-	// Access a specific collection in your database
-	theCollection := client.Database("your-database-name").Collection("your-collection-name")
+	defer client.Disconnect(ctx)
 
-	// Insert a document into the collection
-	insertResult, err := theCollection.InsertOne(ctx, bson.D{
-		"Name", "John Doe",
-		"Song", "Don't Dance",
-		"tags", bson.A{"New", "CodeJams", "Pop Culture"},
+	// Specify the database and collection you want to work with
+	database := client.Database("MongoDb")
+	collection := database.Collection("Create")
+
+	insertResult, err := collection.InsertOne(ctx, bson.D{
+		{"Name", "John Doe"},
+		{"Song", "Don't Dance"},
+		{"tags", bson.A{"New", "CodeJams", "Pop Culture"}},
 	})
-
 	if err != nil {
-		log.Println("There was an error in trying to migrate the data into the database:", err)
+		log.Println("There was an error trying to insert data into the database")
 	}
 
 	fmt.Println("Inserted ID:", insertResult.InsertedID)
-
-	// Close the connection when you're done
-	defer func() {
-		if err := client.Disconnect(ctx); err != nil {
-			log.Fatal("Error disconnecting from MongoDB:", err)
-		}
-	}
 }
-
